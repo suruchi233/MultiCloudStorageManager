@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+
+# Environment files
+.env
+.env.*
+
+# SQLite
+database.db
+
+# Uploads
+uploads/
+temp/
+
+# Google Cloud
+config/gcp_key.json
+
+# Encryption Key
+secret.key
+
+# Logs
+logs
+*.log
+
+# VS Code
+.vscode/
+
+# OS Files
+.DS_Store
+Thumbs.db

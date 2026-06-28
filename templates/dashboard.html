@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Multi Cloud Storage Manager</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#2563eb,#0ea5e9,#14b8a6);
+
+}
+
+.navbar{
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+
+.card{
+
+border:none;
+
+border-radius:18px;
+
+transition:0.3s;
+
+}
+
+
+.card:hover{
+
+transform:translateY(-6px);
+
+box-shadow:0 12px 28px rgba(0,0,0,.15);
+
+}
+
+
+.progress{
+
+height:18px;
+
+border-radius:50px;
+
+background:#ececec;
+
+overflow:hidden;
+
+}
+
+.progress-bar{
+
+font-size:12px;
+
+font-weight:700;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+transition:width .8s ease;
+
+}
+
+.stat-icon{
+    font-size:40px;
+}
+
+.upload-card{
+    border-radius:15px;
+}
+
+.table{
+
+border-radius:15px;
+
+overflow:hidden;
+
+}
+
+.table thead{
+    background:#0d6efd;
+    color:white;
+}
+
+.badge{
+
+font-size:14px;
+
+padding:8px 12px;
+
+}
+.btn{
+    border-radius:10px;
+}
+
+.search-box{
+    border-radius:10px;
+}
+
+.dark-mode{
+    background:#121212;
+    color:white;
+}
+
+.dark-mode .card{
+    background:#1e1e1e;
+    color:white;
+}
+
+.dark-mode .table{
+    background:#1e1e1e;
+    color:white;
+}
+
+.dark-mode .table td,
+.dark-mode .table th{
+    color:white;
+}
+
+.dark-mode .upload-card{
+    background:#1e1e1e;
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select{
+    background:#2b2b2b;
+    color:white;
+    border-color:#444;
+}
+
+.dark-mode .form-control::placeholder{
+    color:#bbb;
+}
+
+.dark-mode .text-muted{
+    color:#cfcfcf !important;
+}
+
+.drop-zone{
+
+    border:3px dashed #0d6efd;
+
+    border-radius:18px;
+
+    background:white;
+
+    min-height:220px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.drop-zone:hover{
+
+    background:#eef6ff;
+
+}
+
+.drop-zone.dragover{
+
+    background:#d7ebff;
+
+    border-color:#198754;
+
+    transform:scale(1.02);
+
+}
+.dark-mode .drop-zone{
+
+    background:#242424;
+
+    color:white;
+
+    border-color:#4da3ff;
+
+}
+
+.dark-mode .drop-zone:hover{
+
+    background:#303030;
+
+}
+</style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark bg-primary">
+
+<div class="container">
+
+<span class="navbar-brand fw-bold fs-3">
+<i class="bi bi-cloud-fill"></i>
+Multi Cloud Storage Manager
+</span>
+
+<div class="d-flex align-items-center gap-2">
+
+<button
+id="darkModeBtn"
+class="btn btn-warning">
+
+🌙 Dark
+
+</button>
+
+<a
+href="/logout"
+class="btn btn-light">
+
+<i class="bi bi-box-arrow-right"></i>
+
+Logout
+
+</a>
+
+</div>
+
+</div>
+
+</nav>
+<div class="container" style="max-width:1400px;">
+
+<div class="mb-4">
+
+<h2>
+
+Welcome,
+
+<b>{{ username }}</b>
+
+👋
+
+</h2>
+
+<p class="text-muted">
+
+Secure Multi Cloud File Storage System
+
+</p>
+
+</div>
+
+<div class="row g-4 mb-4">
+
+<div class="col-md-3">
+
+<div class="card shadow">
+
+<div class="card-body text-center">
+
+<div class="stat-icon text-primary">
+
+<i class="bi bi-files"></i>
+
+</div>
+
+<h5 class="mt-2">
+
+Total Files
+
+</h5>
+
+<h1 class="fw-bold">{{ total_files }}</h1>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow">
+
+<div class="card-body text-center">
+
+<div class="stat-icon text-success">
+<span class="badge bg-warning text-dark">
+
+AWS
+
+</span>
+
+<i class="bi bi-cloud-check-fill"></i>
+
+</div>
+
+<h5 class="mt-2">
+AWS Files
+</h5>
+
+<h1 class="fw-bold">{{ aws_files }}</h1>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow">
+
+<div class="card-body text-center">
+
+<div class="stat-icon text-success">
+<span class="badge bg-success">
+
+GCP
+
+</span>
+
+<i class="bi bi-cloud-check-fill"></i>
+
+</div>
+
+<h5 class="mt-2">
+GCP Files
+</h5>
+
+<h1 class="fw-bold">{{ gcp_files }}</h1>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-md-3">
+
+<div class="card shadow">
+
+<div class="card-body text-center">
+
+<div class="stat-icon text-warning">
+
+<i class="bi bi-shield-lock-fill"></i>
+
+</div>
+
+<h5 class="mt-2">
+
+Encrypted Files
+
+</h5>
+
+<h1 class="fw-bold">{{ encrypted_files }}</h1>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card shadow mb-4">
+
+<div class="card-header bg-primary text-white">
+
+<h6 class="text-muted mb-4">
+
+Current Cloud Usage
+
+</h6>
+</div>
+
+<div class="card-body">
+
+<label class="fw-bold">
+
+</label>
+
+<div class="row mb-4">
+
+    <!-- Progress Card -->
+    <div class="col-lg-6 mb-3">
+
+        <div class="card shadow h-100">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+                    ☁ Cloud Storage 
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between mb-2">
+
+<span class="fw-bold">
+
+AWS Storage
+
+</span>
+
+<span class="text-muted">
+
+{{ aws_files }}/{{ total_files }} Files
+
+</span>
+
+</div>
+
+<div class="progress mb-4">
+
+<div
+class="progress-bar bg-warning text-dark fw-bold"
+style="width: {{ aws_percent }}%;">
+
+{{ aws_percent }}%
+
+</div>
+
+</div>
+
+                <div class="d-flex justify-content-between mb-2">
+
+<span class="fw-bold">
+
+Google Cloud Storage
+
+</span>
+
+<span class="text-muted">
+
+{{ gcp_files }}/{{ total_files }} Files
+
+</span>
+
+</div>
+
+<div class="progress">
+
+<div
+class="progress-bar bg-success fw-bold"
+style="width: {{ gcp_percent }}%;">
+
+{{ gcp_percent }}%
+
+</div>
+
+</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="col-lg-6 mb-3">
+
+        <div class="card shadow h-100">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+
+                    📊 Cloud Storage Distribution
+
+                </h5>
+
+            </div>
+
+            <div class="card-body d-flex justify-content-center align-items-center">
+
+                <div
+style="
+height:220px;
+display:flex;
+justify-content:center;
+align-items:center;
+">
+
+                    <canvas id="cloudChart"></canvas>
+
+                </div>
+                <hr>
+
+<div class="mt-3">
+
+    <div class="d-flex justify-content-between mb-2">
+        <strong>AWS Files</strong>
+        <span>{{ aws_files }}</span>
+    </div>
+
+    <div class="progress mb-3" style="height:10px;">
+        <div
+            class="progress-bar bg-warning"
+            style="width:
+            {% if total_files %}
+                {{ (aws_files / total_files) * 100 }}
+            {% else %}
+                0
+            {% endif %}%;">
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-2">
+        <strong>Google Cloud Files</strong>
+        <span>  {{   gcp_files }}</span>
+    </div>
+
+    <div class="progress" style="height:10px;">
+        <div
+            class="progress-bar bg-success"
+            style="width:
+            {% if total_files %}
+                {{ (gcp_files / total_files) * 100 }}
+            {% else %}
+                0
+            {% endif %}%;">
+        </div>
+    </div>
+
+</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+    {% with messages = get_flashed_messages() %}
+{% if messages %}
+
+{% for message in messages %}
+
+<div class="alert alert-success alert-dismissible fade show shadow-sm">
+
+    <i class="bi bi-check-circle-fill"></i>
+
+    {{ message }}
+
+    <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert">
+    </button>
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+
+<div class="card upload-card shadow mb-4">
+
+<div class="card-header bg-primary text-white">
+
+<h5 class="mb-0">
+
+<i class="bi bi-cloud-arrow-up-fill"></i>
+
+Upload File
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<form action="/upload" method="POST" enctype="multipart/form-data">
+
+<div class="row g-3 align-items-stretch">
+
+    <!-- Drag & Drop -->
+    <div class="col-lg-8">
+
+        <div id="drop-area" class="drop-zone h-100">
+
+            <div class="display-4">
+                ☁️
+            </div>
+
+            <h5 class="mt-3">
+                Drag & Drop Files Here
+            </h5>
+
+            <p class="text-muted mb-0">
+                or click to browse
+            </p>
+
+            <input
+                type="file"
+                id="fileInput"
+                name="file"
+                hidden>
+
+        </div>
+
+    </div>
+
+    <!-- Right Side -->
+    <div class="col-lg-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body d-flex flex-column justify-content-center">
+
+                <label class="form-label fw-bold">
+
+                    <i class="bi bi-cloud-fill"></i>
+
+                    Cloud Provider
+
+                </label>
+
+                <select
+                    name="cloud"
+                    class="form-select mb-3">
+
+                    <option value="AWS">
+
+                        AWS S3
+
+                    </option>
+
+                    <option value="GCP">
+
+                        Google Cloud Storage
+
+                    </option>
+
+                </select>
+
+                <button class="btn btn-primary w-100">
+
+                    <i class="bi bi-upload"></i>
+
+                    Upload File
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</form>
+</div>
+
+</div>
+
+
+<h4 class="mb-3">
+
+<i class="bi bi-folder-fill text-warning"></i>
+
+Your Cloud Files
+
+</h4>
+
+    <div class="card shadow mb-4">
+
+<div class="card-body">
+
+<form method="GET"
+action="/dashboard">
+
+<div class="input-group">
+
+<span class="input-group-text">
+
+<i class="bi bi-search"></i>
+
+</span>
+
+<input
+type="text"
+name="search"
+class="form-control search-box"
+placeholder="Search your files..."
+value="{{ search }}">
+
+<button
+class="btn btn-outline-primary">
+
+Search
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+</form>
+
+    <div class="card shadow">
+
+<div class="card-body">
+
+<div class="table-responsive">
+
+<table class="table table-hover align-middle">
+
+<thead class="table-primary">
+
+<tr>
+
+<th>File Name</th>
+
+<th>Size</th>
+
+<th>Cloud</th>
+
+<th>Upload Date</th>
+
+<th class="text-center">Download</th>
+
+<th class="text-center">Delete</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for file in files %}
+
+<tr>
+
+<td>
+
+{% set ext = file[2].split('.')[-1].lower() %}
+
+{% if ext == "pdf" %}
+
+<i class="bi bi-file-earmark-pdf-fill text-danger fs-5"></i>
+
+{% elif ext in ["png","jpg","jpeg"] %}
+
+<i class="bi bi-file-earmark-image-fill text-success fs-5"></i>
+
+{% elif ext == "docx" %}
+
+<i class="bi bi-file-earmark-word-fill text-primary fs-5"></i>
+
+{% elif ext == "xlsx" %}
+
+<i class="bi bi-file-earmark-excel-fill text-success fs-5"></i>
+
+{% elif ext == "txt" %}
+
+<i class="bi bi-file-earmark-text-fill text-secondary fs-5"></i>
+
+{% else %}
+
+<i class="bi bi-file-earmark-fill"></i>
+
+{% endif %}
+
+<strong>{{ file[2] }}</strong>
+
+</td>
+<td>
+
+{% if file[4] %}
+
+{% if file[4] >= 1024 * 1024 %}
+
+{{ "%.2f"|format(file[4]/(1024*1024)) }} MB
+
+{% else %}
+
+{{ "%.2f"|format(file[4]/1024) }} KB
+
+{% endif %}
+
+{% else %}
+
+N/A
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if file[3] == "AWS" %}
+
+<span class="badge bg-warning text-dark">
+AWS
+</span>
+
+{% else %}
+
+{% if file[3] == "AWS" %}
+
+<span class="badge bg-warning text-dark">
+
+<i class="bi bi-cloud-fill"></i>
+
+AWS
+
+</span>
+
+{% else %}
+
+<span class="badge bg-success">
+
+<i class="bi bi-google"></i>
+
+GCP
+
+</span>
+
+{% endif %}
+
+{% endif %}
+
+</td>
+
+<td>
+
+{{ file[5] }}
+
+</td>
+
+<td class="text-center">
+
+<a href="/download/{{ file[2] }}"
+class="btn btn-success btn-sm">
+
+<i class="bi bi-download"></i>
+
+Download
+
+</a>
+
+</td>
+
+<td class="text-center">
+
+<a href="/delete/{{ file[2] }}"
+class="btn btn-danger btn-sm"
+onclick="return confirm('Delete this file?')">
+
+<i class="bi bi-trash"></i>
+
+Delete
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+{% if files|length == 0 %}
+
+<tr>
+
+<td colspan="6" class="text-center text-muted py-5">
+
+<i class="bi bi-folder2-open fs-1"></i>
+
+<br><br>
+
+No files found.
+
+</td>
+
+</tr>
+
+{% endif %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<br>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById("cloudChart");
+
+new Chart(ctx, {
+
+    type: "doughnut",
+
+    data: {
+
+        labels: [
+
+            "AWS",
+
+            "Google Cloud"
+
+        ],
+
+        datasets: [{
+
+            data: [
+
+                {{ aws_files }},
+
+                {{ gcp_files }}
+
+            ],
+
+            backgroundColor: [
+
+                "#ffc107",
+
+                "#198754"
+
+            ],
+
+            borderWidth:2
+
+        }]
+
+    },
+
+    options:{
+
+        responsive:true,
+
+        maintainAspectRatio:false,
+
+        cutout:"65%",
+
+        plugins:{
+
+            legend:{
+
+                position:"bottom",
+
+                labels:{
+
+                    font:{
+                        size:14
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+<script>
+
+const dropArea = document.getElementById("drop-area");
+
+const input = document.getElementById("fileInput");
+
+dropArea.onclick = () => {
+
+input.click();
+
+};
+
+input.addEventListener("change",function(){
+
+if(this.files.length){
+
+dropArea.querySelector("h5").innerHTML=this.files[0].name;
+
+}
+
+});
+
+dropArea.addEventListener("dragover",function(e){
+
+e.preventDefault();
+
+dropArea.classList.add("dragover");
+
+});
+
+dropArea.addEventListener("dragleave",function(){
+
+dropArea.classList.remove("dragover");
+
+});
+
+dropArea.addEventListener("drop",function(e){
+
+e.preventDefault();
+
+dropArea.classList.remove("dragover");
+
+input.files=e.dataTransfer.files;
+
+dropArea.querySelector("h5").innerHTML=e.dataTransfer.files[0].name;
+
+});
+
+</script>
+
+</body>
+</html>
+<footer class="text-center text-muted mt-5 mb-3">
+
+<hr>
+
+<p>
+
+© 2026 Multi Cloud Storage Manager
+
+<br>
+
+Developed by <strong>Suruchi Singh</strong>
+
+</p>
+
+<script>
+
+const btn = document.getElementById("darkModeBtn");
+
+btn.onclick = function () {
+
+    document.body.classList.toggle("dark-mode");
+
+    if(document.body.classList.contains("dark-mode")){
+
+        btn.innerHTML="☀️ Light";
+
+    }
+
+    else{
+
+        btn.innerHTML="🌙 Dark";
+
+    }
+
+}
+
+</script>
+</footer>
+</body>
+
+</html>
