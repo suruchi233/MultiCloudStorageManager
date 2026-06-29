@@ -1,3 +1,4 @@
+import os
 from flask import (
     Flask,
     render_template,
@@ -47,7 +48,9 @@ ALLOWED_EXTENSIONS = {
 }
 app = Flask(__name__)
 
-app.secret_key = "multicloud_secret_key"
+
+
+app.secret_key = os.getenv("SECRET_KEY", "multicloud_secret_key")
 
 bcrypt = Bcrypt(app)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024

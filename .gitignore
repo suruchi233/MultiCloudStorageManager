@@ -32,3 +32,14 @@ logs
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Python cache
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Environment folders
+env/
+
+# macOS/Linux
+*.swp
