@@ -238,11 +238,15 @@ def upload():
     
     encrypt_file(filepath)
 
+    success = False
+
     if cloud_provider == "AWS":
-        upload_file(filepath, filename)
+        success = upload_file(filepath, filename)
 
     elif cloud_provider == "GCP":
-        upload_file_gcp(filepath, filename)
+        success = upload_file_gcp(filepath, filename)
+
+    print("Upload success:", success)
     save_file(
     session["user_id"],
     filename,
@@ -269,8 +273,6 @@ def delete(filename):
     if owner[0] != session["user_id"]:
         flash("Access Denied")
         return redirect("/dashboard")
-
-    delete_file(filename)
 
     cloud = get_cloud_provider(filename)
 
@@ -302,39 +304,33 @@ def download(filename):
         flash("Access Denied")
         return redirect("/dashboard")
 
-    temp_folder = os.path.join(
-        os.getcwd(),
-        "temp"
-    )
+    temp_folder = os.path.join(os.getcwd(), "temp")
+    os.makedirs(temp_folder, exist_ok=True)
 
-    os.makedirs(
-        temp_folder,
-        exist_ok=True
-    )
-
-    temp_path = os.path.join(
-        temp_folder,
-        filename
-    )
+    temp_path = os.path.join(temp_folder, filename)
 
     cloud = get_cloud_provider(filename)
 
     if cloud[0] == "AWS":
-        download_file(
-        filename,
-        temp_path
-    )
+        download_file(filename, temp_path)
 
     elif cloud[0] == "GCP":
-        download_file_gcp(
-        filename,
-        temp_path
-    )
+        download_file_gcp(filename, temp_path)
+
+    # Debug before decryption
+    with open(temp_path, "rb") as f:
+        print("Before decrypt:", f.read(30))
+
     decrypt_file(temp_path)
+
+    # Debug after decryption
+    with open(temp_path, "rb") as f:
+        print("After decrypt:", f.read(30))
 
     return send_file(
         temp_path,
-        as_attachment=True
+        as_attachment=True,
+        download_name=filename
     )
 if __name__ == "__main__":
     app.run(debug=True)
